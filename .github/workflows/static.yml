@@ -31,13 +31,34 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      # 1. Setup Node.js environment to build the Vite project
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      # 2. Install your dependencies (like React, Tailwind, Gemini SDK)
+      - name: Install dependencies
+        run: npm ci
+
+      # 3. Compile the TypeScript and build the static assets
+      - name: Build project
+        run: npm run build
+        env:
+          # Passes your API key during the build phase if required by Vite's define block
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }} 
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
+
+      # 4. Modified to upload the compiled 'dist' folder instead of the root directory
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # Upload entire repository
-          path: '.'
+          path: './dist'
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v5
