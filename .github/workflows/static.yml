@@ -16,7 +16,6 @@ permissions:
   id-token: write
 
 # Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
-# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
 concurrency:
   group: "pages"
   cancel-in-progress: false
@@ -39,7 +38,7 @@ jobs:
           node-version: 20
           cache: 'npm'
 
-      # 2. Changed from 'npm ci' to 'npm install' to bypass strict lockfile conflicts
+      # 2. Install dependencies using standard install to prevent lockfile conflicts
       - name: Install dependencies
         run: npm install
 
@@ -50,15 +49,17 @@ jobs:
           # Passes your API key during the build phase if required by Vite's define block
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }} 
 
+      # Configure the GitHub Pages deployment environment
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
-      # 4. Modified to upload the compiled 'dist' folder instead of the root directory
+      # 4. Upload the compiled static files from Vite's target directory
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: './dist'
 
+      # Deploy everything to live web hosting
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v5
