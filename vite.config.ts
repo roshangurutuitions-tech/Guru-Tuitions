@@ -6,9 +6,8 @@ import { defineConfig, loadEnv } from 'vite';
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, '.', '');
   return {
-    // 1. Added base path for GitHub Pages deployment
-    // Replace 'your-repository-name' with your exact GitHub repository name (e.g., '/my-ai-app/')
-    base: 'Guru-Tuitions', 
+    // Fixed: Added leading and trailing slashes so Vite can resolve assets properly on GitHub Pages
+    base: '/Guru-Tuitions/', 
 
     plugins: [react(), tailwindcss()],
     define: {
